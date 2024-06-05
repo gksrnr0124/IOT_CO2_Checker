@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Azure.Messaging.EventHubs.Consumer;
-using Newtonsoft.Json;
+using IoTDataVisualizer;
+using Newtonsoft.Json; 
 
 namespace WCHS_Assignment14
 {
     public partial class frmMain : Form
     {
+        private Devices device1;
+        private Devices device2;
         private readonly static string connectionString = "Endpoint=sb://iothub-ns-wchs-58009161-d596108607.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=glM1A7WyVpMhjjMrhLcdQjkIr91upa8tSAIoTFiDvUI=;EntityPath=wchs";
         private readonly static string EventHubName = "wchs";
         static int msgCount = 1;
@@ -86,6 +89,8 @@ namespace WCHS_Assignment14
         public frmMain()
         {
             InitializeComponent();
+            device1 = new Devices(listMsgs1, chartData1);
+            device2 = new Devices(listMsgs2, chartData2);
         }
         private void chartData_Click(object sender, EventArgs e)
         {
@@ -97,20 +102,15 @@ namespace WCHS_Assignment14
             switch (comboBox1.SelectedItem.ToString())
             {
                 case "Device 1":
-                    //bring up device 1 stuff
-                    listMsgs1.Visible = true;
-                    chartData1.Visible = true;
-                    //take down device 2 stuff
-                    listMsgs2.Visible = false;
-                    chartData2.Visible = false;
+                    //bring up device 1 stuff and take down device 2 stuff
+                    device1.Visible();
+                    device2.Invisible();
                     break;
 
                 case "Device 2":
                     //do opposite
-                    listMsgs1.Visible = false;
-                    chartData1.Visible = false;
-                    listMsgs2.Visible = true;
-                    chartData2.Visible = true;
+                    device1.Invisible();
+                    device2.Visible();
                     break;
             }
         }
