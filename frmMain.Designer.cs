@@ -34,13 +34,20 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chartData1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.listMsgs1 = new System.Windows.Forms.ListBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.chartData2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.listMsgs2 = new System.Windows.Forms.ListBox();
+            this.btnsave = new System.Windows.Forms.Button();
+            this.chartData3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.listMsgs3 = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartData1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartData2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartData3)).BeginInit();
             this.SuspendLayout();
             // 
             // chartData1
@@ -77,7 +84,8 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "Device 1",
-            "Device 2"});
+            "Device 2",
+            "Device 3"});
             this.comboBox1.Location = new System.Drawing.Point(31, 22);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(160, 21);
@@ -111,11 +119,50 @@
             this.listMsgs2.TabIndex = 5;
             this.listMsgs2.Visible = false;
             // 
+            // btnsave
+            // 
+            this.btnsave.Location = new System.Drawing.Point(31, 373);
+            this.btnsave.Name = "btnsave";
+            this.btnsave.Size = new System.Drawing.Size(75, 23);
+            this.btnsave.TabIndex = 6;
+            this.btnsave.Text = "save data";
+            this.btnsave.UseVisualStyleBackColor = true;
+            this.btnsave.Click += new System.EventHandler(this.btnsave_Click);
+            // 
+            // chartData3
+            // 
+            chartArea3.Name = "ChartArea1";
+            this.chartData3.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartData3.Legends.Add(legend3);
+            this.chartData3.Location = new System.Drawing.Point(262, 12);
+            this.chartData3.Name = "chartData3";
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chartData3.Series.Add(series3);
+            this.chartData3.Size = new System.Drawing.Size(526, 384);
+            this.chartData3.TabIndex = 7;
+            this.chartData3.Text = "Saved Data Chart";
+            this.chartData3.Visible = false;
+            // 
+            // listMsgs3
+            // 
+            this.listMsgs3.FormattingEnabled = true;
+            this.listMsgs3.Location = new System.Drawing.Point(12, 419);
+            this.listMsgs3.Name = "listMsgs3";
+            this.listMsgs3.Size = new System.Drawing.Size(776, 212);
+            this.listMsgs3.TabIndex = 8;
+            this.listMsgs3.Visible = false;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(802, 644);
+            this.Controls.Add(this.listMsgs3);
+            this.Controls.Add(this.chartData3);
+            this.Controls.Add(this.btnsave);
             this.Controls.Add(this.listMsgs2);
             this.Controls.Add(this.chartData2);
             this.Controls.Add(this.comboBox1);
@@ -127,6 +174,7 @@
             this.Load += new System.EventHandler(this.frmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chartData1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartData2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartData3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -138,5 +186,8 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartData2;
         private System.Windows.Forms.ListBox listMsgs2;
+        private System.Windows.Forms.Button btnsave;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartData3;
+        private System.Windows.Forms.ListBox listMsgs3;
     }
 }

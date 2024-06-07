@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml.Serialization;
 using Azure.Messaging.EventHubs.Consumer;
 using IoTDataVisualizer;
+
 using Newtonsoft.Json; 
 
 namespace WCHS_Assignment14
@@ -13,6 +17,9 @@ namespace WCHS_Assignment14
     {
         private Devices device1;
         private Devices device2;
+        private Devices device3;
+        private List<IoTData> dataList = new List<IoTData>();
+
         private readonly static string connectionString = "Endpoint=sb://iothub-ns-wchs-58009161-d596108607.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=glM1A7WyVpMhjjMrhLcdQjkIr91upa8tSAIoTFiDvUI=;EntityPath=wchs";
         private readonly static string EventHubName = "wchs";
         static int msgCount = 1;
@@ -77,12 +84,18 @@ namespace WCHS_Assignment14
         {
             this.listMsgs2.Items.Add("Reading data from WCHS IoT Device 2. Ctrl-C to exit.\n");
         }
+        private void SetUpListBox3()
+        {
+            this.listMsgs3.Items.Add("Reading data from Saved Data. Ctrl-C to exit.\n");
+        }
         private async void frmMain_Load(object sender, EventArgs e)
         {
             SetUpChart1();
             SetUpListBox1();
             SetUpChart2();
             SetUpListBox2();
+            SetUpChart3();
+            SetUpListBox3();
             await ReceiveMessagesFromDeviceAsync();
         }
 
@@ -91,6 +104,7 @@ namespace WCHS_Assignment14
             InitializeComponent();
             device1 = new Devices(listMsgs1, chartData1);
             device2 = new Devices(listMsgs2, chartData2);
+            device3= new Devices(listMsgs3, chartData3);
         }
         private void chartData_Click(object sender, EventArgs e)
         {
@@ -102,15 +116,23 @@ namespace WCHS_Assignment14
             switch (comboBox1.SelectedItem.ToString())
             {
                 case "Device 1":
-                    //bring up device 1 stuff and take down device 2 stuff
+                    //bring up device 1 stuff and take down device 2 and 3 stuff
                     device1.Visible();
                     device2.Invisible();
+                    device3.Invisible();
                     break;
 
                 case "Device 2":
-                    //do opposite
+                    //do for 2
                     device1.Invisible();
                     device2.Visible();
+                    device3.Invisible();
+                    break;
+                case "Device 3":
+                    //do for 3
+                    device1.Invisible();
+                    device2.Invisible();
+                    device3.Visible();
                     break;
             }
         }
@@ -133,6 +155,62 @@ namespace WCHS_Assignment14
             this.chartData2.Series["CO2"].Points.AddXY(msgCount++, data);
             this.chartData2.ChartAreas[0].AxisX.Minimum = 0;
             this.chartData2.ChartAreas[0].AxisY.Maximum = 5000;
+        }
+        private void SetUpChart3()
+        {
+            this.chartData3.Palette = ChartColorPalette.SeaGreen;
+            this.chartData3.Titles.Add("IoT data from Saved Data");
+            this.chartData3.Series.Clear();
+            this.chartData3.Series.Add("CO2");
+            this.chartData3.Series["CO2"].ChartType = SeriesChartType.Line;
+        }
+        private void UpdateChart3(string data)
+        {
+            data = data.Substring(9);
+            this.chartData3.Series["CO2"].Points.AddXY(msgCount++, data);
+            this.chartData3.ChartAreas[0].AxisX.Minimum = 0;
+            this.chartData3.ChartAreas[0].AxisY.Maximum = 5000;
+        }
+
+        private void btnsave_Click(object sender, EventArgs e)
+        {
+            // Prompt the user for the room name using a MessageBox
+            string roomName = PromptForRoomName();
+
+            if (!string.IsNullOrEmpty(roomName))
+            {
+                // Get today's date
+                string currentDate = DateTime.Now.ToString("yyyy_MM_dd");
+
+                // Generate the file name
+                string fileName = $"{currentDate}_{roomName}.xml";
+
+                // Serialize the dataList to XML and save it to the file
+                XmlSerializer serializer = new XmlSerializer(typeof(List<IoTData>));
+                using (TextWriter writer = new StreamWriter(fileName))
+                {
+                    serializer.Serialize(writer, dataList);
+                }
+
+                MessageBox.Show($"Data saved to {fileName}", "Save Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private string PromptForRoomName()
+        {
+            string roomName = "";
+            do
+            {
+                roomName = Microsoft.VisualBasic.Interaction.InputBox("Enter the room name:", "Room Name", "");
+                if (string.IsNullOrEmpty(roomName))
+                {
+                    DialogResult result = MessageBox.Show("Room name cannot be empty. Do you want to try again?", "Empty Room Name", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.No)
+                        break;
+                }
+            } while (string.IsNullOrEmpty(roomName));
+
+            return roomName;
         }
     }
 }

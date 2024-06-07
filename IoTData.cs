@@ -2,6 +2,7 @@
 
 namespace WCHS_Assignment14
 {
+    [Serializable]
     public class IoTData
     {
         private double _co2;
