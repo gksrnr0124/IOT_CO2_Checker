@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using Azure.Messaging.EventHubs.Consumer;
 using IoTDataVisualizer;
 
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
 
 namespace WCHS_Assignment14
 {
@@ -56,6 +56,7 @@ namespace WCHS_Assignment14
             msg += (string)deviceID;
             msg += ": ";
             msg += jsonData;
+            btnsave.Visible = true;
             return msg;
         }
 
@@ -128,11 +129,12 @@ namespace WCHS_Assignment14
                     device2.Visible();
                     device3.Invisible();
                     break;
-                case "Device 3":
-                    //do for 3
+                case "Saved Data":
+                    // Show saved data and prompt for file import
                     device1.Invisible();
                     device2.Invisible();
                     device3.Visible();
+                    ImportSavedData();
                     break;
             }
         }
@@ -166,8 +168,8 @@ namespace WCHS_Assignment14
         }
         private void UpdateChart3(string data)
         {
-            data = data.Substring(9);
-            this.chartData3.Series["CO2"].Points.AddXY(msgCount++, data);
+            double co2Value = double.Parse(data);
+            this.chartData3.Series["CO2"].Points.AddXY(msgCount++, co2Value);
             this.chartData3.ChartAreas[0].AxisX.Minimum = 0;
             this.chartData3.ChartAreas[0].AxisY.Maximum = 5000;
         }
@@ -211,6 +213,40 @@ namespace WCHS_Assignment14
             } while (string.IsNullOrEmpty(roomName));
 
             return roomName;
+        }
+        private void ImportSavedData()
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
+                openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Get the selected file name
+                    string fileName = openFileDialog.FileName;
+
+                    // Deserialize the XML file into a list of IoTData
+                    List<IoTData> importedData;
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<IoTData>));
+                    using (TextReader reader = new StreamReader(fileName))
+                    {
+                        importedData = (List<IoTData>)serializer.Deserialize(reader);
+                    }
+
+                    // Clear existing data in chart3
+                    this.chartData3.Series["CO2"].Points.Clear();
+                    msgCount = 1; // Reset message count for chart3
+
+                    // Update chart3 with the imported data
+                    foreach (var data in importedData)
+                    {
+                        UpdateChart3(data.CO2.ToString());
+                    }
+
+                    MessageBox.Show("Data imported successfully.", "Import Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
     }
 }

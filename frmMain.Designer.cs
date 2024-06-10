@@ -57,14 +57,15 @@
             this.chartData1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chartData1.Legends.Add(legend1);
-            this.chartData1.Location = new System.Drawing.Point(262, 12);
+            this.chartData1.Location = new System.Drawing.Point(349, 14);
+            this.chartData1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chartData1.Name = "chartData1";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chartData1.Series.Add(series1);
-            this.chartData1.Size = new System.Drawing.Size(526, 384);
+            this.chartData1.Size = new System.Drawing.Size(701, 443);
             this.chartData1.TabIndex = 0;
             this.chartData1.Text = "chart1";
             this.chartData1.Visible = false;
@@ -73,9 +74,11 @@
             // listMsgs1
             // 
             this.listMsgs1.FormattingEnabled = true;
-            this.listMsgs1.Location = new System.Drawing.Point(13, 419);
+            this.listMsgs1.ItemHeight = 15;
+            this.listMsgs1.Location = new System.Drawing.Point(17, 483);
+            this.listMsgs1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listMsgs1.Name = "listMsgs1";
-            this.listMsgs1.Size = new System.Drawing.Size(775, 212);
+            this.listMsgs1.Size = new System.Drawing.Size(1032, 244);
             this.listMsgs1.TabIndex = 2;
             this.listMsgs1.Visible = false;
             // 
@@ -85,10 +88,11 @@
             this.comboBox1.Items.AddRange(new object[] {
             "Device 1",
             "Device 2",
-            "Device 3"});
-            this.comboBox1.Location = new System.Drawing.Point(31, 22);
+            "Saved Data"});
+            this.comboBox1.Location = new System.Drawing.Point(41, 25);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(160, 21);
+            this.comboBox1.Size = new System.Drawing.Size(212, 23);
             this.comboBox1.TabIndex = 3;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -98,13 +102,14 @@
             this.chartData2.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
             this.chartData2.Legends.Add(legend2);
-            this.chartData2.Location = new System.Drawing.Point(262, 12);
+            this.chartData2.Location = new System.Drawing.Point(349, 14);
+            this.chartData2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chartData2.Name = "chartData2";
             series2.ChartArea = "ChartArea1";
             series2.Legend = "Legend1";
             series2.Name = "Series1";
             this.chartData2.Series.Add(series2);
-            this.chartData2.Size = new System.Drawing.Size(526, 384);
+            this.chartData2.Size = new System.Drawing.Size(701, 443);
             this.chartData2.TabIndex = 4;
             this.chartData2.Text = "chartdata2";
             this.chartData2.Visible = false;
@@ -113,17 +118,20 @@
             // listMsgs2
             // 
             this.listMsgs2.FormattingEnabled = true;
-            this.listMsgs2.Location = new System.Drawing.Point(13, 419);
+            this.listMsgs2.ItemHeight = 15;
+            this.listMsgs2.Location = new System.Drawing.Point(17, 483);
+            this.listMsgs2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listMsgs2.Name = "listMsgs2";
-            this.listMsgs2.Size = new System.Drawing.Size(775, 212);
+            this.listMsgs2.Size = new System.Drawing.Size(1032, 244);
             this.listMsgs2.TabIndex = 5;
             this.listMsgs2.Visible = false;
             // 
             // btnsave
             // 
-            this.btnsave.Location = new System.Drawing.Point(31, 373);
+            this.btnsave.Location = new System.Drawing.Point(41, 430);
+            this.btnsave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnsave.Name = "btnsave";
-            this.btnsave.Size = new System.Drawing.Size(75, 23);
+            this.btnsave.Size = new System.Drawing.Size(100, 27);
             this.btnsave.TabIndex = 6;
             this.btnsave.Text = "save data";
             this.btnsave.UseVisualStyleBackColor = true;
@@ -135,13 +143,14 @@
             this.chartData3.ChartAreas.Add(chartArea3);
             legend3.Name = "Legend1";
             this.chartData3.Legends.Add(legend3);
-            this.chartData3.Location = new System.Drawing.Point(262, 12);
+            this.chartData3.Location = new System.Drawing.Point(349, 14);
+            this.chartData3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chartData3.Name = "chartData3";
             series3.ChartArea = "ChartArea1";
             series3.Legend = "Legend1";
             series3.Name = "Series1";
             this.chartData3.Series.Add(series3);
-            this.chartData3.Size = new System.Drawing.Size(526, 384);
+            this.chartData3.Size = new System.Drawing.Size(701, 443);
             this.chartData3.TabIndex = 7;
             this.chartData3.Text = "Saved Data Chart";
             this.chartData3.Visible = false;
@@ -149,17 +158,19 @@
             // listMsgs3
             // 
             this.listMsgs3.FormattingEnabled = true;
-            this.listMsgs3.Location = new System.Drawing.Point(12, 419);
+            this.listMsgs3.ItemHeight = 15;
+            this.listMsgs3.Location = new System.Drawing.Point(16, 483);
+            this.listMsgs3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listMsgs3.Name = "listMsgs3";
-            this.listMsgs3.Size = new System.Drawing.Size(776, 212);
+            this.listMsgs3.Size = new System.Drawing.Size(1033, 244);
             this.listMsgs3.TabIndex = 8;
             this.listMsgs3.Visible = false;
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(802, 644);
+            this.ClientSize = new System.Drawing.Size(1069, 743);
             this.Controls.Add(this.listMsgs3);
             this.Controls.Add(this.chartData3);
             this.Controls.Add(this.btnsave);
@@ -169,6 +180,7 @@
             this.Controls.Add(this.listMsgs1);
             this.Controls.Add(this.chartData1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "frmMain";
             this.RightToLeftLayout = true;
             this.Load += new System.EventHandler(this.frmMain_Load);
