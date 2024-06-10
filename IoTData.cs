@@ -7,6 +7,10 @@ namespace WCHS_Assignment14
     {
         private double _co2;
 
+        public IoTData()
+        {
+
+        }
         public IoTData(double co2)
         {
             this.CO2 = co2;
