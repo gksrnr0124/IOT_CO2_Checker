@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,35 +61,7 @@ namespace WCHS_Assignment14
             return msg;
         }
 
-        private void UpdateChart1(string data)
-        {
-            data = data.Substring(9);
-            this.chartData1.Series["CO2"].Points.AddXY(msgCount++, data);
-            this.chartData1.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData1.ChartAreas[0].AxisY.Maximum = 5000;
-        }
-
-        private void SetUpChart1()
-        {
-            this.chartData1.Palette = ChartColorPalette.SeaGreen;
-            this.chartData1.Titles.Add("IoT data from Device 1");
-            this.chartData1.Series.Clear();
-            this.chartData1.Series.Add("CO2");
-            this.chartData1.Series["CO2"].ChartType = SeriesChartType.Line;
-        }
-
-        private void SetUpListBox1()
-        {
-            this.listMsgs1.Items.Add("Reading data from WCHS IoT Device 1. Ctrl-C to exit.\n");
-        }
-        private void SetUpListBox2()
-        {
-            this.listMsgs2.Items.Add("Reading data from WCHS IoT Device 2. Ctrl-C to exit.\n");
-        }
-        private void SetUpListBox3()
-        {
-            this.listMsgs3.Items.Add("Reading data from Saved Data. Ctrl-C to exit.\n");
-        }
+        
         private async void frmMain_Load(object sender, EventArgs e)
         {
             SetUpChart1();
@@ -96,7 +69,6 @@ namespace WCHS_Assignment14
             SetUpChart2();
             SetUpListBox2();
             SetUpChart3();
-            SetUpListBox3();
             await ReceiveMessagesFromDeviceAsync();
         }
 
@@ -138,10 +110,19 @@ namespace WCHS_Assignment14
                     break;
             }
         }
-
         private void chart1_Click(object sender, EventArgs e)
         {
 
+        }
+        
+        //set up charts
+        private void SetUpChart1()
+        {
+            this.chartData1.Palette = ChartColorPalette.SeaGreen;
+            this.chartData1.Titles.Add("IoT data from Device 1");
+            this.chartData1.Series.Clear();
+            this.chartData1.Series.Add("CO2");
+            this.chartData1.Series["CO2"].ChartType = SeriesChartType.Line;
         }
         private void SetUpChart2()
         {
@@ -151,13 +132,6 @@ namespace WCHS_Assignment14
             this.chartData2.Series.Add("CO2");
             this.chartData2.Series["CO2"].ChartType = SeriesChartType.Line;
         }
-        private void UpdateChart2(string data)
-        {
-            data = data.Substring(9);
-            this.chartData2.Series["CO2"].Points.AddXY(msgCount++, data);
-            this.chartData2.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData2.ChartAreas[0].AxisY.Maximum = 5000;
-        }
         private void SetUpChart3()
         {
             this.chartData3.Palette = ChartColorPalette.SeaGreen;
@@ -165,6 +139,36 @@ namespace WCHS_Assignment14
             this.chartData3.Series.Clear();
             this.chartData3.Series.Add("CO2");
             this.chartData3.Series["CO2"].ChartType = SeriesChartType.Line;
+        }
+
+        //set up listboxes
+        private void SetUpListBox1()
+        {
+            this.listMsgs1.Items.Add("Reading data from WCHS IoT Device 1. Ctrl-C to exit.\n");
+        }
+        private void SetUpListBox2()
+        {
+            this.listMsgs2.Items.Add("Reading data from WCHS IoT Device 2. Ctrl-C to exit.\n");
+        }
+
+        //update charts
+        private void UpdateChart1(string data)
+        {
+            data = data.Substring(9);
+            this.chartData1.Series["CO2"].Points.AddXY(msgCount++, data);
+            this.chartData1.ChartAreas[0].AxisX.Minimum = 0;
+            this.chartData1.ChartAreas[0].AxisY.Maximum = 5000;
+            double co2value = double.Parse(data);
+            AddDataToList(co2value, listMsgs1);
+        }
+        private void UpdateChart2(string data)
+        {
+            data = data.Substring(9);
+            this.chartData2.Series["CO2"].Points.AddXY(msgCount++, data);
+            this.chartData2.ChartAreas[0].AxisX.Minimum = 0;
+            this.chartData2.ChartAreas[0].AxisY.Maximum = 5000;
+            double co2value = double.Parse(data);
+            AddDataToList(co2value, listMsgs2);
         }
         private void UpdateChart3(string data)
         {
@@ -174,6 +178,8 @@ namespace WCHS_Assignment14
             this.chartData3.ChartAreas[0].AxisY.Maximum = 5000;
         }
 
+
+        //save
         private void btnsave_Click(object sender, EventArgs e)
         {
             // Prompt the user for the room name using a MessageBox
@@ -197,7 +203,6 @@ namespace WCHS_Assignment14
                 MessageBox.Show($"Data saved to {fileName}", "Save Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
         private string PromptForRoomName()
         {
             string roomName = "";
@@ -214,39 +219,52 @@ namespace WCHS_Assignment14
 
             return roomName;
         }
+
+        //deserialize and import data
         private void ImportSavedData()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
-                openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+                openFileDialog.Filter = "XML files (*.xml)|*.xml";
+                openFileDialog.Title = "Select an XML file";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Get the selected file name
                     string fileName = openFileDialog.FileName;
 
-                    // Deserialize the XML file into a list of IoTData
-                    List<IoTData> importedData;
+                    // Deserialize the XML file back into dataList
                     XmlSerializer serializer = new XmlSerializer(typeof(List<IoTData>));
                     using (TextReader reader = new StreamReader(fileName))
                     {
-                        importedData = (List<IoTData>)serializer.Deserialize(reader);
+                        dataList = (List<IoTData>)serializer.Deserialize(reader);
                     }
 
-                    // Clear existing data in chart3
+                    // Clear the current chart data and ListBox logs
                     this.chartData3.Series["CO2"].Points.Clear();
-                    msgCount = 1; // Reset message count for chart3
+                    listMsgs3.Items.Clear();
 
-                    // Update chart3 with the imported data
-                    foreach (var data in importedData)
+                    // Populate the chart and ListBox with the imported data
+                    foreach (IoTData data in dataList)
                     {
                         UpdateChart3(data.CO2.ToString());
+                        // Clear duplicate logs
+                        listMsgs3.Items.AddRange(data.Logs.Except(listMsgs3.Items.Cast<string>()).ToArray());
                     }
-
-                    MessageBox.Show("Data imported successfully.", "Import Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
+
+        //adding data to the list for saving/importing
+        private void AddDataToList(double co2Value, ListBox listBox)
+        {
+            // Collect logs from the ListBox
+            List<string> logs = new List<string>();
+            foreach (var item in listBox.Items)
+            {
+                logs.Add(item.ToString());
+            }
+            dataList.Add(new IoTData(co2Value, logs));  // Adding data and logs to dataList
+        }
+
     }
 }
