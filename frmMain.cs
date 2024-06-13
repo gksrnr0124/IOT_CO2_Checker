@@ -157,7 +157,7 @@ namespace WCHS_Assignment14
             data = data.Substring(9);
             this.chartData1.Series["CO2"].Points.AddXY(msgCount++, data);
             this.chartData1.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData1.ChartAreas[0].AxisY.Maximum = 5000;
+            this.chartData1.ChartAreas[0].AxisY.Maximum = 2500;
             double co2value = double.Parse(data);
             AddDataToList(co2value, listMsgs1);
         }
@@ -166,7 +166,7 @@ namespace WCHS_Assignment14
             data = data.Substring(9);
             this.chartData2.Series["CO2"].Points.AddXY(msgCount++, data);
             this.chartData2.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData2.ChartAreas[0].AxisY.Maximum = 5000;
+            this.chartData2.ChartAreas[0].AxisY.Maximum = 2500;
             double co2value = double.Parse(data);
             AddDataToList(co2value, listMsgs2);
         }
@@ -175,7 +175,7 @@ namespace WCHS_Assignment14
             double co2Value = double.Parse(data);
             this.chartData3.Series["CO2"].Points.AddXY(msgCount++, co2Value);
             this.chartData3.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData3.ChartAreas[0].AxisY.Maximum = 5000;
+            this.chartData3.ChartAreas[0].AxisY.Maximum = 2500;
         }
 
 
@@ -238,10 +238,16 @@ namespace WCHS_Assignment14
                     {
                         dataList = (List<IoTData>)serializer.Deserialize(reader);
                     }
+                    
+                    // Sort the dataList based on the Timestamp property
+                    dataList = dataList.OrderBy(data => data.Timestamp).ToList();
 
                     // Clear the current chart data and ListBox logs
                     this.chartData3.Series["CO2"].Points.Clear();
                     listMsgs3.Items.Clear();
+                    
+                    // Reset msgCount
+                    msgCount = 1;
 
                     // Populate the chart and ListBox with the imported data
                     foreach (IoTData data in dataList)
