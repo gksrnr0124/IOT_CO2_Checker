@@ -19,12 +19,29 @@ namespace WCHS_Assignment14
         private Devices device1;
         private Devices device2;
         private Devices device3;
-        private List<IoTData> dataList = new List<IoTData>();
+
+        private List<IoTData> dataList1 = new List<IoTData>();
+        private List<IoTData> dataList2 = new List<IoTData>();
+        private List<IoTData> dataList3 = new List<IoTData>();
+        
+
+        private ChartsUpdater ChartsUpdater1;
+        private ChartsUpdater ChartsUpdater2;
+        private ChartsUpdater ChartsUpdater3;
+
+        private Timer updateTimer;
 
         private readonly static string connectionString = "Endpoint=sb://iothub-ns-wchs-58009161-d596108607.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=glM1A7WyVpMhjjMrhLcdQjkIr91upa8tSAIoTFiDvUI=;EntityPath=wchs";
         private readonly static string EventHubName = "wchs";
-        static int msgCount = 1;
-
+        
+        //update textboxes every second
+        private void InitializeTimer()
+        {
+            updateTimer = new Timer();
+            updateTimer.Interval = 1000; // Update every second
+            updateTimer.Tick += new EventHandler(UpdateTextBoxes);
+            updateTimer.Start();
+        }
         private async Task ReceiveMessagesFromDeviceAsync()
         {
             await using EventHubConsumerClient consumer = new EventHubConsumerClient(EventHubConsumerClient.DefaultConsumerGroupName, connectionString, EventHubName);
@@ -36,15 +53,30 @@ namespace WCHS_Assignment14
                 if (deviceID.ToString() == "wchs1")
                 {
                     this.listMsgs1.Items.Insert(0, ConstructDisplayMessage(partitionEvent));
-                    UpdateChart1(data);
-                    msgCount ++;
+                    ChartsUpdater1.UpdateChart(data);
                 }
                 if (deviceID.ToString() == "wchs8")
                 {
                     this.listMsgs2.Items.Insert(0, ConstructDisplayMessage(partitionEvent));
-                    UpdateChart2(data);
-                    msgCount++;
+                    ChartsUpdater2.UpdateChart(data);
                 }
+            }
+        }
+
+        //call updating max min ave textobxes depending on what device(chart) user is looking at
+        private void UpdateTextBoxes(object sender, EventArgs e)
+        {
+            if (chartData1.Visible)
+            {
+                UpdateMaxMinAveTextBoxes(ChartsUpdater1);
+            }
+            else if (chartData2.Visible)
+            {
+                UpdateMaxMinAveTextBoxes(ChartsUpdater2);
+            }
+            else if (chartData3.Visible)
+            {
+                UpdateMaxMinAveTextBoxes(ChartsUpdater3);
             }
         }
 
@@ -75,9 +107,16 @@ namespace WCHS_Assignment14
         public frmMain()
         {
             InitializeComponent();
+
             device1 = new Devices(listMsgs1, chartData1);
             device2 = new Devices(listMsgs2, chartData2);
             device3= new Devices(listMsgs3, chartData3);
+
+            ChartsUpdater1 = new ChartsUpdater(chartData1, listMsgs1, dataList1);
+            ChartsUpdater2 = new ChartsUpdater(chartData2, listMsgs2, dataList2);
+            ChartsUpdater3 = new ChartsUpdater(chartData3, listMsgs3, dataList3);
+
+            InitializeTimer();
         }
         private void chartData_Click(object sender, EventArgs e)
         {
@@ -93,6 +132,7 @@ namespace WCHS_Assignment14
                     device1.Visible();
                     device2.Invisible();
                     device3.Invisible();
+                    
                     break;
 
                 case "Device 2":
@@ -100,13 +140,14 @@ namespace WCHS_Assignment14
                     device1.Invisible();
                     device2.Visible();
                     device3.Invisible();
+                    
                     break;
                 case "Saved Data":
                     // Show saved data and prompt for file import
                     device1.Invisible();
                     device2.Invisible();
                     device3.Visible();
-                    ImportSavedData();
+                    ImportSavedData(dataList3);
                     break;
             }
         }
@@ -141,6 +182,7 @@ namespace WCHS_Assignment14
             this.chartData3.Series["CO2"].ChartType = SeriesChartType.Line;
         }
 
+
         //set up listboxes
         private void SetUpListBox1()
         {
@@ -151,35 +193,8 @@ namespace WCHS_Assignment14
             this.listMsgs2.Items.Add("Reading data from WCHS IoT Device 2. Ctrl-C to exit.\n");
         }
 
-        //update charts
-        private void UpdateChart1(string data)
-        {
-            data = data.Substring(9);
-            this.chartData1.Series["CO2"].Points.AddXY(msgCount++, data);
-            this.chartData1.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData1.ChartAreas[0].AxisY.Maximum = 2500;
-            double co2value = double.Parse(data);
-            AddDataToList(co2value, listMsgs1);
-        }
-        private void UpdateChart2(string data)
-        {
-            data = data.Substring(9);
-            this.chartData2.Series["CO2"].Points.AddXY(msgCount++, data);
-            this.chartData2.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData2.ChartAreas[0].AxisY.Maximum = 2500;
-            double co2value = double.Parse(data);
-            AddDataToList(co2value, listMsgs2);
-        }
-        private void UpdateChart3(string data)
-        {
-            double co2Value = double.Parse(data);
-            this.chartData3.Series["CO2"].Points.AddXY(msgCount++, co2Value);
-            this.chartData3.ChartAreas[0].AxisX.Minimum = 0;
-            this.chartData3.ChartAreas[0].AxisY.Maximum = 2500;
-        }
 
 
-        //save
         private void btnsave_Click(object sender, EventArgs e)
         {
             // Prompt the user for the room name using a MessageBox
@@ -187,22 +202,41 @@ namespace WCHS_Assignment14
 
             if (!string.IsNullOrEmpty(roomName))
             {
-                // Get today's date
-                string currentDate = DateTime.Now.ToString("yyyy_MM_dd");
-
-                // Generate the file name
-                string fileName = $"{currentDate}_{roomName}.xml";
-
-                // Serialize the dataList to XML and save it to the file
-                XmlSerializer serializer = new XmlSerializer(typeof(List<IoTData>));
-                using (TextWriter writer = new StreamWriter(fileName))
+                // Determine which device is selected and save its data
+                if (comboBox1.SelectedItem.ToString() == "Device 1")
                 {
-                    serializer.Serialize(writer, dataList);
+                    SaveData(dataList1, roomName);
                 }
-
-                MessageBox.Show($"Data saved to {fileName}", "Save Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (comboBox1.SelectedItem.ToString() == "Device 2")
+                {
+                    SaveData(dataList2, roomName);
+                }
+                else
+                {
+                    MessageBox.Show("Please select a device to save its data.", "Device Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
+        //actual save process
+        private void SaveData(List<IoTData> dataList, string roomName)
+        {
+            // Get today's date
+            string currentDate = DateTime.Now.ToString("yyyy_MM_dd");
+
+            // Generate the file name
+            string fileName = $"{currentDate}_{roomName}.xml";
+
+            // Serialize the dataList to XML and save it to the file
+            XmlSerializer serializer = new XmlSerializer(typeof(List<IoTData>));
+            using (TextWriter writer = new StreamWriter(fileName))
+            {
+                serializer.Serialize(writer, dataList);
+            }
+
+            MessageBox.Show($"Data saved to {fileName}", "Save Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        //bring up promt for user to write in room name
         private string PromptForRoomName()
         {
             string roomName = "";
@@ -221,8 +255,13 @@ namespace WCHS_Assignment14
         }
 
         //deserialize and import data
-        private void ImportSavedData()
+        private void ImportSavedData(List<IoTData> dataList)
         {
+            // Reset 
+            ChartsUpdater3.ResetMsgCount();
+            ChartsUpdater3.ResetMinMaxCO2();
+
+            //deserialize
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "XML files (*.xml)|*.xml";
@@ -246,31 +285,27 @@ namespace WCHS_Assignment14
                     this.chartData3.Series["CO2"].Points.Clear();
                     listMsgs3.Items.Clear();
                     
-                    // Reset msgCount
-                    msgCount = 1;
+                    
 
                     // Populate the chart and ListBox with the imported data
                     foreach (IoTData data in dataList)
                     {
-                        UpdateChart3(data.CO2.ToString());
+                        ChartsUpdater3.UpdateChart3(data.CO2);
                         // Clear duplicate logs
                         listMsgs3.Items.AddRange(data.Logs.Except(listMsgs3.Items.Cast<string>()).ToArray());
                     }
+                    UpdateMaxMinAveTextBoxes(ChartsUpdater3);
                 }
             }
         }
 
-        //adding data to the list for saving/importing
-        private void AddDataToList(double co2Value, ListBox listBox)
-        {
-            // Collect logs from the ListBox
-            List<string> logs = new List<string>();
-            foreach (var item in listBox.Items)
-            {
-                logs.Add(item.ToString());
-            }
-            dataList.Add(new IoTData(co2Value, logs));  // Adding data and logs to dataList
-        }
 
+        // Update textboxes with max and min CO2 values
+        private void UpdateMaxMinAveTextBoxes(ChartsUpdater updater)
+        {
+            txtMaxppm.Text = updater.GetMaxCO2().ToString();
+            txtMinppm.Text = updater.GetMinCO2().ToString();
+            txtAveppm.Text = updater.GetAverageCO2().ToString();
+        }
     }
 }

@@ -45,6 +45,12 @@
             this.btnsave = new System.Windows.Forms.Button();
             this.chartData3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.listMsgs3 = new System.Windows.Forms.ListBox();
+            this.txtMaxppm = new System.Windows.Forms.TextBox();
+            this.lblMaxppm = new System.Windows.Forms.Label();
+            this.lblMinppm = new System.Windows.Forms.Label();
+            this.txtMinppm = new System.Windows.Forms.TextBox();
+            this.lblAveppm = new System.Windows.Forms.Label();
+            this.txtAveppm = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartData1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartData2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartData3)).BeginInit();
@@ -166,11 +172,77 @@
             this.listMsgs3.TabIndex = 8;
             this.listMsgs3.Visible = false;
             // 
+            // txtMaxppm
+            // 
+            this.txtMaxppm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMaxppm.Font = new System.Drawing.Font("Gulim", 12F);
+            this.txtMaxppm.Location = new System.Drawing.Point(41, 133);
+            this.txtMaxppm.Name = "txtMaxppm";
+            this.txtMaxppm.ReadOnly = true;
+            this.txtMaxppm.Size = new System.Drawing.Size(100, 30);
+            this.txtMaxppm.TabIndex = 9;
+            // 
+            // lblMaxppm
+            // 
+            this.lblMaxppm.AutoSize = true;
+            this.lblMaxppm.Font = new System.Drawing.Font("Gulim", 15F);
+            this.lblMaxppm.Location = new System.Drawing.Point(36, 105);
+            this.lblMaxppm.Name = "lblMaxppm";
+            this.lblMaxppm.Size = new System.Drawing.Size(113, 25);
+            this.lblMaxppm.TabIndex = 10;
+            this.lblMaxppm.Text = "Max ppm";
+            // 
+            // lblMinppm
+            // 
+            this.lblMinppm.AutoSize = true;
+            this.lblMinppm.Font = new System.Drawing.Font("Gulim", 15F);
+            this.lblMinppm.Location = new System.Drawing.Point(36, 180);
+            this.lblMinppm.Name = "lblMinppm";
+            this.lblMinppm.Size = new System.Drawing.Size(106, 25);
+            this.lblMinppm.TabIndex = 12;
+            this.lblMinppm.Text = "Min ppm";
+            // 
+            // txtMinppm
+            // 
+            this.txtMinppm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMinppm.Font = new System.Drawing.Font("Gulim", 12F);
+            this.txtMinppm.Location = new System.Drawing.Point(41, 208);
+            this.txtMinppm.Name = "txtMinppm";
+            this.txtMinppm.ReadOnly = true;
+            this.txtMinppm.Size = new System.Drawing.Size(100, 30);
+            this.txtMinppm.TabIndex = 11;
+            // 
+            // lblAveppm
+            // 
+            this.lblAveppm.AutoSize = true;
+            this.lblAveppm.Font = new System.Drawing.Font("Gulim", 15F);
+            this.lblAveppm.Location = new System.Drawing.Point(35, 262);
+            this.lblAveppm.Name = "lblAveppm";
+            this.lblAveppm.Size = new System.Drawing.Size(111, 25);
+            this.lblAveppm.TabIndex = 14;
+            this.lblAveppm.Text = "Ave ppm";
+            // 
+            // txtAveppm
+            // 
+            this.txtAveppm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtAveppm.Font = new System.Drawing.Font("Gulim", 12F);
+            this.txtAveppm.Location = new System.Drawing.Point(40, 290);
+            this.txtAveppm.Name = "txtAveppm";
+            this.txtAveppm.ReadOnly = true;
+            this.txtAveppm.Size = new System.Drawing.Size(100, 30);
+            this.txtAveppm.TabIndex = 13;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1069, 743);
+            this.Controls.Add(this.lblAveppm);
+            this.Controls.Add(this.txtAveppm);
+            this.Controls.Add(this.lblMinppm);
+            this.Controls.Add(this.txtMinppm);
+            this.Controls.Add(this.lblMaxppm);
+            this.Controls.Add(this.txtMaxppm);
             this.Controls.Add(this.listMsgs3);
             this.Controls.Add(this.chartData3);
             this.Controls.Add(this.btnsave);
@@ -188,6 +260,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartData2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartData3)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -201,5 +274,11 @@
         private System.Windows.Forms.Button btnsave;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartData3;
         private System.Windows.Forms.ListBox listMsgs3;
+        private System.Windows.Forms.TextBox txtMaxppm;
+        private System.Windows.Forms.Label lblMaxppm;
+        private System.Windows.Forms.Label lblMinppm;
+        private System.Windows.Forms.TextBox txtMinppm;
+        private System.Windows.Forms.Label lblAveppm;
+        private System.Windows.Forms.TextBox txtAveppm;
     }
 }
